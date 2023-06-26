@@ -2,6 +2,12 @@ import React, { useState } from "react";
 import {Form, FormGroup, Col, Label, Input, Container } from 'reactstrap';
 import { Button } from 'reactstrap';
 import './LoginPage.css'
+import myImage from '../imgs/logo.jpg'
+import {Link} from 'react-router-dom'
+// toast message------------------------
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 // animation rain
 const rainContainer = document.getElementById('rain-container');
@@ -42,7 +48,9 @@ const count = 90 ; // số lượng giọt
 }
 createElementRandom();
 
+// toast message------------------------
 
+const notify = () => toast();
 
 // Thong tin user va validated account
 
@@ -63,27 +71,55 @@ export default function RegisterPage (){
       [name]:value,
     })
     }
-
+        
     const handleSubmit = (e) =>{
       e.preventDefault();
-
-
 
       if (formValue.userName == '' ||formValue.password == ''){
         alert('Please fill full information');
       }
-      else {
-        console.log(formValue)
-        alert ('Login successful');
-      }
+      else {     // console.log(formValue)
+        // alert ('Login successful');
+        fetch('https://64917a7f2f2c7ee6c2c84970.mockapi.io/User', {
+          method: 'GET',
+          headers: {'content-type':'application/json'},
+        }).then(res => {
+          if (res.ok) {
+              return res.json();
+          }
+          // handle error
+        }).then(tasks => {
+          
+          function checkNameExists(array) {
+            return array.some(item => item.userName === formValue.userName && item.password === formValue.password);
+          }
+              // console.log(tasks);
+                if (checkNameExists(tasks)){
+                  // navigator'/'
+                  toast('Login successful')
+  
+                }
+                else{
+                  toast('Username or password not valid')
+                }
+        
+          // Do something with the list of tasks
+        }).catch(error => {
+          // handle error
+        })
+      
     }
+        
+
+  }
   
 
 
     return(
        <Container>
-        {/* <div id="rain-container">
-        </div> */}
+         <Link to ='/' id='header'>
+          <img src={myImage}/>
+        </Link>
         <Form onSubmit={handleSubmit} id="form-container">
           <Label id="name-page">Login Page</Label>
         <FormGroup row>
@@ -103,6 +139,10 @@ export default function RegisterPage (){
         <Button id="btn-register" color="primary" outline>Login</Button>
 
       </Form>
+      <div>
+        {/* Toast message */}
+        <ToastContainer style={{fontSize:'20px'}} />
+      </div>
 
       </Container>
         
