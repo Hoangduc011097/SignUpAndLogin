@@ -117,6 +117,7 @@ export default function RegisterPage (){
 
     return(
        <Container>
+     
          <Link to ='/' id='header'>
           <img src={myImage}/>
         </Link>
